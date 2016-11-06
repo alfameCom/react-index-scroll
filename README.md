@@ -5,6 +5,12 @@ As the name suggests, scrolling happens by index and no height calculations are 
 
 ## How to run
 
+### Install
+
+```
+npm install
+```
+
 ### Webpack Dev Server
 
 ```
