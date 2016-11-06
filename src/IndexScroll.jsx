@@ -117,7 +117,7 @@ export default class IndexScroll extends React.Component {
 
 		const { items, buffer, currentDisplayRange } = this.state;
 		const { itemCount, itemRenderer, display } = this.props;
-console.log( 'asd' );
+
 		return (
 
 			<div>
