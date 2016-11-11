@@ -18,6 +18,8 @@
     "babel-preset-react": "^6.16.0",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.25.0",
+    "eslint": "^3.9.1",
+    "eslint-plugin-react": "^6.6.0",
     "file-loader": "^0.9.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",

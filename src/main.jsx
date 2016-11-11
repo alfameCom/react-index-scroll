@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { IndexRoute, Router, Route, hashHistory } from 'react-router'
-import IndexScroll from './IndexScroll'
+import { IndexRoute, Router, Route, hashHistory } from 'react-router';
+import IndexScroll from './IndexScroll';
 
 export default class Main extends React.Component {
 
@@ -28,7 +28,7 @@ export default class Main extends React.Component {
 			<div>
 				<p>Test List:</p>
 				<IndexScroll
-					itemCount={this.state.items.length}
+					length={this.state.items.length}
 					itemRenderer={( index, key ) => {
 
 						return (

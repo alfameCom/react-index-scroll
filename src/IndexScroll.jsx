@@ -20,10 +20,22 @@ export default class IndexScroll extends React.Component {
 
 	componentWillMount() {
 
-		const { currentDisplayRange } = this.state;
-		
+		let currentDisplayRange = this.state.currentDisplayRange;
+
+		if( this.props.display > this.props.length ) {
+
+			currentDisplayRange[ 0 ] = 0;
+			currentDisplayRange[ 1 ] = this.props.length;
+
+		} else if( currentDisplayRange[1] > this.props.length ) {
+
+			currentDisplayRange[1] = this.props.length;
+			currentDisplayRange[0] = currentDisplayRange[1] - this.props.display;
+
+		}
+
 		let items = this.createItemList( currentDisplayRange );
-		this.setState( { items: items } );
+		this.setState( { currentDisplayRange: currentDisplayRange, items: items } );
 
 	}
 	
@@ -31,6 +43,26 @@ export default class IndexScroll extends React.Component {
 		
 		this.onScroll();
 		
+	}
+
+	componentWillReceiveProps( nextProps ) {
+
+		if( nextProps.start != this.props.start ) {
+
+			let currentDisplayRange = this.state.currentDisplayRange;			
+
+			if( currentDisplayRange[1] > nextProps.length ) {
+
+				currentDisplayRange[1] = nextProps.length;
+				currentDisplayRange[0] = currentDisplayRange[1] - this.props.display;
+
+			}
+
+			let items = this.createItemList( currentDisplayRange );
+			this.setState( { currentDisplayRange: currentDisplayRange, items: items } );
+
+		}
+
 	}
 
 	_onScroll() {
@@ -52,7 +84,7 @@ export default class IndexScroll extends React.Component {
 			
 				currentDisplayRange[0] -= this.props.display;
 				currentDisplayRange[1] -= this.props.display;
-				
+
 				if( currentDisplayRange[0] >= 0 ) {
 
 					let items = this.createItemList( currentDisplayRange );
@@ -61,21 +93,28 @@ export default class IndexScroll extends React.Component {
 						items: items,
 						currentDisplayRange: currentDisplayRange
 					}, () => {
-						
+
 						window.scrollTo( 0, documentHeight - window.innerHeight - 1 );
 						
 					} );
 
+				} else {
+
+					currentDisplayRange[0] = 0;
+					currentDisplayRange[1] = this.props.display;
+
+					this.setState( { currentDisplayRange: currentDisplayRange } );
+
 				}
 
-			} else if( scrollTop + window.innerHeight == documentHeight ) {
+			} else if( scrollTop + window.innerHeight >= documentHeight ) {
 
 				let currentDisplayRange = this.state.currentDisplayRange;
 	
 				currentDisplayRange[0] += this.props.display;
 				currentDisplayRange[1] += this.props.display;
-				
-				if( currentDisplayRange[1] <= this.props.itemCount ) {
+
+				if( currentDisplayRange[1] <= this.props.length ) {
 
 					let items = this.createItemList( currentDisplayRange );
 					
@@ -83,13 +122,20 @@ export default class IndexScroll extends React.Component {
 						items: items,
 						currentDisplayRange: currentDisplayRange 
 					}, () => {
-						
+							
 						let element = document.getElementById( 'IndexScrollItem-' + currentDisplayRange[0] );
 						let bounds = element.getBoundingClientRect();
 
 						window.scrollTo( 0, window.scrollY + bounds.top );
-						
+							
 					} );
+
+				} else {
+
+					currentDisplayRange[1] = this.props.length;
+					currentDisplayRange[0] = currentDisplayRange[1] - this.props.display;
+
+					this.setState( { currentDisplayRange: currentDisplayRange } );
 
 				}
 
@@ -115,8 +161,7 @@ export default class IndexScroll extends React.Component {
 
 	render() {
 
-		const { items, buffer, currentDisplayRange } = this.state;
-		const { itemCount, itemRenderer, display } = this.props;
+		let items = this.state.items;
 
 		return (
 
@@ -138,7 +183,7 @@ IndexScroll.defaultProps = {
 
 	start: 0,
 	display: 5,
-	itemCount: 0,
+	length: 0,
 	itemRenderer: function() { return null; }
 
 };
@@ -147,7 +192,7 @@ IndexScroll.propTypes = {
 
 	start: React.PropTypes.number,
 	display: React.PropTypes.number,
-	itemCount: React.PropTypes.number,
+	length: React.PropTypes.number,
 	itemRenderer: React.PropTypes.func
 
 };
