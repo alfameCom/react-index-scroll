@@ -94,7 +94,10 @@ export default class IndexScroll extends React.Component {
 						currentDisplayRange: currentDisplayRange
 					}, () => {
 
-						window.scrollTo( 0, documentHeight - window.innerHeight - 1 );
+						let element = document.getElementById( 'IndexScrollItem-' + currentDisplayRange[0] );
+						let bounds = element.getBoundingClientRect();
+
+						window.scrollTo( 0, window.scrollY + bounds.top );
 						
 					} );
 
@@ -123,7 +126,7 @@ export default class IndexScroll extends React.Component {
 						currentDisplayRange: currentDisplayRange 
 					}, () => {
 							
-						let element = document.getElementById( 'IndexScrollItem-' + currentDisplayRange[0] );
+						let element = document.getElementById( 'IndexScrollItem-' + ( currentDisplayRange[0] - 1 ) );
 						let bounds = element.getBoundingClientRect();
 
 						window.scrollTo( 0, window.scrollY + bounds.top );
@@ -148,7 +151,23 @@ export default class IndexScroll extends React.Component {
 	_createItemList( range ) {
 		
 		let items = [];
-		for( let i = range[0]; i < range[1]; i++ ) {
+		let rangeFrom = range[0];
+		let rangeTo = range[1]; 
+
+
+				if( rangeFrom > 0 ) {
+
+					rangeFrom -= this.props.padding;
+					if( rangeFrom < 0 ) rangeFrom = 0;
+
+				}
+				
+console.log( 'down', rangeFrom, rangeTo );
+console.log( range );
+
+		//console.log( rangeFrom, rangeTo );
+
+		for( let i = rangeFrom; i < rangeTo; i++ ) {
 			
 			let key = 'IndexScrollItem-' + i;
 			items.push( this.props.itemRenderer( i, key ) );
@@ -184,6 +203,7 @@ IndexScroll.defaultProps = {
 	start: 0,
 	display: 5,
 	length: 0,
+	padding: 5,
 	itemRenderer: function() { return null; }
 
 };
@@ -193,6 +213,7 @@ IndexScroll.propTypes = {
 	start: React.PropTypes.number,
 	display: React.PropTypes.number,
 	length: React.PropTypes.number,
+	padding: React.PropTypes.number,
 	itemRenderer: React.PropTypes.func
 
 };
