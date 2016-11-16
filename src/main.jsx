@@ -11,13 +11,26 @@ export default class Main extends React.Component {
 
 		this.state = {
 
-			items: (new Array(100)).fill({
+			items: []
+
+		};
+
+	}
+
+	componentDidMount() {
+
+		//Simulate slow ajax call
+		setTimeout( () => {
+
+			let items = (new Array(100).fill( {
 
 				name: 'asd'
 
-			} )
+			} ) );
 
-		};
+			this.setState( { items: items } );
+
+		}, 500 );
 
 	}
 
